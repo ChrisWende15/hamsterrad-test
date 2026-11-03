@@ -1223,6 +1223,7 @@ leadForm.addEventListener('submit', function(e){
     consent_email: cEmail ? 'ja' : 'nein',
     consent_rueckruf: cCall ? 'ja' : 'nein',
     consent_whatsapp: cWa ? 'ja' : 'nein',
+    consent_tags: [cEmail ? 'einwilligung-email' : '', cCall ? 'einwilligung-rueckruf' : '', cWa ? 'einwilligung-whatsapp' : ''].filter(Boolean).join(','),
     consent_text_email: cEmail ? document.getElementById('tEmail').textContent.trim() : '',
     consent_text_rueckruf: cCall ? document.getElementById('tCall').textContent.trim() : '',
     consent_text_whatsapp: cWa ? document.getElementById('tWhatsapp').textContent.trim() : '',

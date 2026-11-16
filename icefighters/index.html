@@ -28,6 +28,24 @@
     .about-img figure { margin: 0; }
     .about-img figcaption { font-size: .88rem; opacity: .75; margin-top: .7rem; text-align: center; }
     .action-img { border-radius: var(--radius); box-shadow: 0 14px 40px rgba(0,0,0,.35); margin-top: .6rem; display: block; }
+    .training-box { display:grid; grid-template-columns: 1fr 1.1fr; gap: 36px; align-items:start; }
+    .training-list { margin: 1rem 0 0; padding-left: 1.2rem; }
+    .training-list li { margin-bottom: .45rem; }
+    .lead-form { background: var(--white); border-radius: var(--radius); padding: 28px;
+      box-shadow: 0 4px 18px rgba(11,13,12,.08); }
+    .lead-form .row { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .lead-form label { display:block; font-size:.88rem; font-weight:600; margin: 0 0 .35rem; color: var(--ink); }
+    .lead-form input[type=text], .lead-form input[type=email], .lead-form input[type=tel] {
+      width:100%; box-sizing:border-box; padding: 12px 14px; border: 1px solid #cfd6d4; border-radius: 10px;
+      font: inherit; font-size: 1rem; margin-bottom: 14px; background:#fff; color: var(--ink); }
+    .lead-form .consent { display:flex; gap:10px; align-items:flex-start; font-size:.85rem; color: var(--ink-soft); margin: 4px 0 18px; }
+    .lead-form .consent input { margin-top: 3px; }
+    .lead-form .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+    .lead-form button { border:0; cursor:pointer; font-family:inherit; width:100%; }
+    .form-msg { margin-top: 14px; font-size: .95rem; }
+    .form-msg.ok { color: #1d7a4f; font-weight:600; }
+    .form-msg.err { color: #b3261e; }
+    @media (max-width: 900px) { .training-box, .lead-form .row { grid-template-columns: 1fr; gap: 0; } }
     /* Hero mit eigenem Stadionfoto (anona ICEDOME), stark in Petrol abgedunkelt */
     .hero.stadium {
       background:
@@ -52,6 +70,7 @@
       <a href="#klarheit">Klarheits-Check</a>
       <a href="#praxis">Praxis</a>
       <a href="#test">Hamsterrad-Test</a>
+      <a href="#training">Gratis-Training</a>
       <a class="btn btn-small" href="#termin">Termin buchen</a>
     </nav>
   </div>
@@ -216,6 +235,40 @@
     </div>
   </section>
 
+  <!-- ===== GRATIS-TRAINING (Anmeldung → n8n → Memberspot) ===== -->
+  <section class="section" id="training">
+    <div class="container training-box">
+      <div>
+        <span class="eyebrow" style="color:var(--accent, #e07a5f)">Geschenk für IceFighters-Partner</span>
+        <h2>Gratis: das Umsetzungs-Training „Mehr Zeit &amp; Umsatz als Unternehmer“</h2>
+        <p class="lead">12 kompakte Videos (ca. 1 Stunde), sofort umsetzbar – für Unternehmer, die raus aus dem Hamsterrad wollen. Regulär 67&nbsp;€, für dich kostenlos.</p>
+        <ul class="training-list">
+          <li>Dein Zielbild als Unternehmer – und die EINE Sache, die zählt</li>
+          <li>Wochenplanung Schritt für Schritt: dein Kalender gehört wieder dir</li>
+          <li>Drei echte Fallstudien: mehr Zeit, mehr Umsatz, Freitag frei</li>
+        </ul>
+        <p class="small-note">Die Zugangsdaten zum Mitgliederbereich bekommst du direkt per E-Mail.</p>
+      </div>
+      <form class="lead-form" id="trainingForm" novalidate>
+        <div class="row">
+          <div><label for="tf-vorname">Vorname *</label><input id="tf-vorname" name="vorname" type="text" autocomplete="given-name" required></div>
+          <div><label for="tf-nachname">Nachname *</label><input id="tf-nachname" name="nachname" type="text" autocomplete="family-name" required></div>
+        </div>
+        <label for="tf-email">E-Mail-Adresse *</label>
+        <input id="tf-email" name="email" type="email" autocomplete="email" required>
+        <label for="tf-telefon">Handynummer *</label>
+        <input id="tf-telefon" name="telefon" type="tel" autocomplete="tel" placeholder="z. B. 0151 …" required>
+        <label for="tf-firma">Unternehmen (optional)</label>
+        <input id="tf-firma" name="firma" type="text" autocomplete="organization">
+        <div class="hp" aria-hidden="true"><label for="tf-website">Website</label><input id="tf-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <label class="consent"><input id="tf-einwilligung" name="einwilligung" type="checkbox" required>
+          <span>Ich möchte das Training erhalten und bin einverstanden, dass die Wende High Performance Consulting GmbH meine Daten dafür speichert und mich per E-Mail oder Telefon zum Training kontaktiert. Widerruf jederzeit möglich. Mehr in der <a href="https://www.chris-wende.com/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span></label>
+        <button class="btn btn-big" type="submit" id="tf-submit">Training kostenlos sichern</button>
+        <p class="form-msg" id="tf-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
   <!-- ===== TERMIN (Calendly, erst nach Klick geladen) ===== -->
   <section class="section gray" id="termin">
     <div class="container narrow">
@@ -275,6 +328,35 @@
     s.src = 'https://assets.calendly.com/assets/external/widget.js';
     s.async = true;
     document.body.appendChild(s);
+  });
+  /* Gratis-Training: Anmeldung an n8n (schaltet Memberspot frei, Lead per WhatsApp) */
+  var form = document.getElementById('trainingForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = document.getElementById('tf-msg'), btn = document.getElementById('tf-submit');
+    var d = {};
+    ['vorname','nachname','email','telefon','firma','website'].forEach(function (k) { d[k] = form.elements[k].value.trim(); });
+    d.einwilligung = form.elements.einwilligung.checked;
+    msg.className = 'form-msg';
+    if (!d.vorname || !d.nachname || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email) || d.telefon.replace(/\D/g,'').length < 7) {
+      msg.className = 'form-msg err'; msg.textContent = 'Bitte Vorname, Nachname, eine gültige E-Mail und deine Handynummer angeben.'; return;
+    }
+    if (!d.einwilligung) { msg.className = 'form-msg err'; msg.textContent = 'Bitte bestätige noch die Einwilligung.'; return; }
+    d.quelle = utm.toString();
+    btn.disabled = true; btn.textContent = 'Wird gesendet …';
+    fetch('https://chris-wende.app.n8n.cloud/webhook/icefighters-training', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d)
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      form.reset();
+      msg.className = 'form-msg ok';
+      msg.textContent = 'Geschafft, ' + d.vorname + '! Deine Zugangsdaten sind unterwegs – schau in dein E-Mail-Postfach (ggf. auch in den Spam-Ordner).';
+      btn.textContent = 'Training gesichert ✓';
+    }).catch(function () {
+      msg.className = 'form-msg err';
+      msg.textContent = 'Das hat leider nicht geklappt. Bitte versuch es noch einmal oder schreib an info@chris-wende.com.';
+      btn.disabled = false; btn.textContent = 'Training kostenlos sichern';
+    });
   });
 })();
 </script>

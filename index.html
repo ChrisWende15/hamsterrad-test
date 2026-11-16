@@ -910,7 +910,7 @@ footer button.linklike{background:none;border:0;color:var(--ink-faint);font:inhe
    EINSTELLUNGEN (hier zentral anpassen)
    ============================================================ */
 const PIXEL_ID     = "857341902773367";  /* Meta-Pixel „2.0 - Christoph Wende Pixel“ */
-const BOOKING_URL  = "";                 /* Link zum Terminkalender in skalieren.ai – leer = kein Button */
+const BOOKING_URL  = "https://calendly.com/christoph_wende/zeitfresser-analyse"; /* Terminkalender (Calendly) – leer = kein Button */
 const FORM_VERSION = "hr-test-v2-2026-11";
 
 /* ============================================================
@@ -1246,7 +1246,10 @@ leadForm.addEventListener('submit', function(e){
   document.getElementById('bookIntro').style.display = icp ? 'none' : '';
   document.getElementById('callNote').style.display = (icp && cCall) ? 'block' : 'none';
   if(icp && BOOKING_URL){
-    document.getElementById('bookingLink').href = BOOKING_URL;
+    /* Kampagnen-Herkunft (utm_*) an Calendly weitergeben */
+    const bookUrl = new URL(BOOKING_URL);
+    Object.keys(trackParams).forEach(function(k){ if(k.indexOf('utm_') === 0) bookUrl.searchParams.set(k, trackParams[k]); });
+    document.getElementById('bookingLink').href = bookUrl.toString();
     document.getElementById('bookingWrap').style.display = 'block';
   }
 
